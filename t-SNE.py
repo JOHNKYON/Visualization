@@ -94,5 +94,38 @@ def scatter(x, colors):
 
     return f, ax, sc, txts
 
+
 scatter(digits_proj, y)
 plt.savefig('images/digits_tsne-generated.png', dpi=120)
+
+
+# compute similarity matrix
+def _joint_probabilities_constant_sigma(D, sigma):
+    # print D
+    P = np.exp(-D ** 2 / 2 * sigma ** 2)
+    P /= np.sum(P, axis=1)
+    return P
+
+
+# Pairwise distances between all data points
+D = pairwise_distances(X, squared=True)
+# Similarity with constant sigma
+P_constant = _joint_probabilities_constant_sigma(D, .002)
+# Similarity with variable sigma
+P_binary = _joint_probabilities(D, 30., False)
+# The output of this function needs to be reshaped to a square matrix
+P_binary_s = squareform(P_binary)
+
+plt.figure(figsize=(12, 4))
+pal = sns.light_palette("blue", as_cmap=True)
+
+plt.subplot(131)
+plt.imshow(D[::10, ::10], interpolation='none', cmap=pal)
+plt.axis('off')
+plt.title("Distance matrix", fontdict={'fontsize': 16})
+
+plt.subplot(133)
+plt.imshow(P_binary_s[::10, ::10], interpolation='none', cmap=pal)
+plt.axis('off')
+plt.title('$p_{j|i}$ (variable $\sigma$)', fontdict={'fontsize': 16})
+plt.savefig('images/similarity-generated.png', dpi=120)
