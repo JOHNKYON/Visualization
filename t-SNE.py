@@ -63,7 +63,7 @@ X = np.vstack([digits.data[digits.target == i]
 y = np.hstack([digits.target[digits.target == i]
                for i in range(10)])
 
-digits_proj = TSNE(random_state=RS).fit_transform(X)
+# digits_proj = TSNE(random_state=RS).fit_transform(X)
 
 
 def scatter(x, colors):
@@ -95,8 +95,8 @@ def scatter(x, colors):
     return f, ax, sc, txts
 
 
-scatter(digits_proj, y)
-plt.savefig('images/digits_tsne-generated.png', dpi=120)
+# scatter(digits_proj, y)
+# plt.savefig('images/digits_tsne-generated.png', dpi=120)
 
 
 # compute similarity matrix
@@ -107,40 +107,39 @@ def _joint_probabilities_constant_sigma(D, sigma):
     return P
 
 
-# Pairwise distances between all data points
-D = pairwise_distances(X, squared=True)
-# Similarity with constant sigma
-P_constant = _joint_probabilities_constant_sigma(D, .002)
-# Similarity with variable sigma
-P_binary = _joint_probabilities(D, 30., False)
-# The output of this function needs to be reshaped to a square matrix
-P_binary_s = squareform(P_binary)
-
-plt.figure(figsize=(12, 4))
-pal = sns.light_palette("blue", as_cmap=True)
-
-plt.subplot(131)
-plt.imshow(D[::10, ::10], interpolation='none', cmap=pal)
-plt.axis('off')
-plt.title("Distance matrix", fontdict={'fontsize': 16})
-
-plt.subplot(133)
-plt.imshow(P_binary_s[::10, ::10], interpolation='none', cmap=pal)
-plt.axis('off')
-plt.title('$p_{j|i}$ (variable $\sigma$)', fontdict={'fontsize': 16})
-plt.savefig('images/similarity-generated.png', dpi=120)
+# # Pairwise distances between all data points
+# D = pairwise_distances(X, squared=True)
+# # Similarity with constant sigma
+# P_constant = _joint_probabilities_constant_sigma(D, .002)
+# # Similarity with variable sigma
+# P_binary = _joint_probabilities(D, 30., False)
+# # The output of this function needs to be reshaped to a square matrix
+# P_binary_s = squareform(P_binary)
+#
+# plt.figure(figsize=(12, 4))
+# pal = sns.light_palette("blue", as_cmap=True)
+#
+# plt.subplot(131)
+# plt.imshow(D[::10, ::10], interpolation='none', cmap=pal)
+# plt.axis('off')
+# plt.title("Distance matrix", fontdict={'fontsize': 16})
+#
+# plt.subplot(133)
+# plt.imshow(P_binary_s[::10, ::10], interpolation='none', cmap=pal)
+# plt.axis('off')
+# plt.title('$p_{j|i}$ (variable $\sigma$)', fontdict={'fontsize': 16})
+# plt.savefig('images/similarity-generated.png', dpi=120)
 
 
 # This list will contain the positions of the map points at every iteration
 positions = []
 
 
-def _gradient_descent(objective, p0, it, n_iter, n_iter_without_progress=30,
+def _gradient_descent(objective, p0, it, n_iter, n_iter_check,
+                      kwargs, n_iter_without_progress=30,
                       momentum=0.5, learning_rate=1000.0, min_gain=0.01,
                       min_grad_norm=1e-7, min_error_diff=1e-7, verbose=0,
-                      args=[]):
-
-
+                      args=[],objective_error=None):
     # The documentation of this function can be found in scikit-learn's code.
     p = p0.copy().ravel()
     update = np.zeros_like(p)
@@ -178,13 +177,11 @@ def _gradient_descent(objective, p0, it, n_iter, n_iter_without_progress=30,
         p += update
 
     return p, error, i
-
 sklearn.manifold.t_sne._gradient_descent = _gradient_descent
 
 X_proj = TSNE(random_state=RS).fit_transform(X)
 
-X_iter = np.dstack(position.reshape(-1, 2)
-                   for position in positions)
+X_iter = np.dstack(position.reshape(-1, 2) for position in positions)
 
 f, ax, sc, txts = scatter(X_iter[..., -1], y)
 
@@ -199,6 +196,23 @@ def make_frame_mpl(t):
         txt.set_y(ytext)
     return mplfig_to_npimage(f)
 
-animation = mpy.VideoClip(make_frame_mpl,
-                          duration=X_iter.shape[2]/40.)
-animation.write_gif("https://d3ansictanv2wj.cloudfront.net/images/animation-94a2c1ff.gif", fps=20)
+npoints = 1000
+plt.figure(figsize=(15, 4))
+for i, D in enumerate((2, 5, 10)):
+    # Normally distributed points.
+    u = np.random.randn(npoints, D)
+    # Now on the sphere.
+    u /= norm(u, axis=1)[:, None]
+    # Uniform radius.
+    r = np.random.rand(npoints, 1)
+    # Uniformly within the ball.
+    points = u * r**(1./D)
+    # Plot.
+    ax = plt.subplot(1, 3, i+1)
+    ax.set_xlabel('Ball radius')
+    if i == 0:
+        ax.set_ylabel('Distance from origin')
+    ax.hist(norm(points, axis=1),
+            bins=np.linspace(0., 1., 50))
+    ax.set_title('D=%d' % D, loc='left')
+plt.savefig('images/spheres-generated.png', dpi=100, bbox_inches='tight')
