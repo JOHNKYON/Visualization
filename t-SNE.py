@@ -129,3 +129,76 @@ plt.imshow(P_binary_s[::10, ::10], interpolation='none', cmap=pal)
 plt.axis('off')
 plt.title('$p_{j|i}$ (variable $\sigma$)', fontdict={'fontsize': 16})
 plt.savefig('images/similarity-generated.png', dpi=120)
+
+
+# This list will contain the positions of the map points at every iteration
+positions = []
+
+
+def _gradient_descent(objective, p0, it, n_iter, n_iter_without_progress=30,
+                      momentum=0.5, learning_rate=1000.0, min_gain=0.01,
+                      min_grad_norm=1e-7, min_error_diff=1e-7, verbose=0,
+                      args=[]):
+
+
+    # The documentation of this function can be found in scikit-learn's code.
+    p = p0.copy().ravel()
+    update = np.zeros_like(p)
+    gains = np.ones_like(p)
+    error = np.finfo(np.float).max
+    best_error = np.finfo(np.float).max
+    best_iter = 0
+
+    for i in range(it, n_iter):
+        # We save the current position.
+        positions.append(p.copy())
+
+        new_error, grad = objective(p, *args)
+        error_diff = np.abs(new_error - error)
+        error = new_error
+        grad_norm = linalg.norm(grad)
+
+        if error < best_error:
+            best_error = error
+            best_iter = i
+        elif i - best_iter > n_iter_without_progress:
+            break
+        if min_grad_norm >= grad_norm:
+            break
+        if min_error_diff >= error_diff:
+            break
+
+        inc = update * grad >= 0.0
+        dec = np.invert(inc)
+        gains[inc] += 0.05
+        gains[dec] *= 0.95
+        np.clip(gains, min_gain, np.inf)
+        grad *= gains
+        update = momentum * update - learning_rate * grad
+        p += update
+
+    return p, error, i
+
+sklearn.manifold.t_sne._gradient_descent = _gradient_descent
+
+X_proj = TSNE(random_state=RS).fit_transform(X)
+
+X_iter = np.dstack(position.reshape(-1, 2)
+                   for position in positions)
+
+f, ax, sc, txts = scatter(X_iter[..., -1], y)
+
+
+def make_frame_mpl(t):
+    i = int(t*40)
+    x = X_iter[..., i]
+    sc.set_offsets(x)
+    for j, txt in zip(range(10), txts):
+        xtext, ytext = np.median(x[y == j, :], axis=0)
+        txt.set_x(xtext)
+        txt.set_y(ytext)
+    return mplfig_to_npimage(f)
+
+animation = mpy.VideoClip(make_frame_mpl,
+                          duration=X_iter.shape[2]/40.)
+animation.write_gif("https://d3ansictanv2wj.cloudfront.net/images/animation-94a2c1ff.gif", fps=20)
