@@ -5,12 +5,17 @@ import codecs
 import conf
 
 # 读入文件
-input_file = codecs.open("data/source_without_header.txt", 'rb', encoding='utf8')
-raw = input_file.read()
+# input_file = codecs.open("data/source_without_header.txt", 'rb', encoding='utf8')
+# raw = input_file.read()
 
 # 分词
 # conf.jieba_conf.init()
-text_list = src.lsi.raw_init(raw)
+raw = src.pg.pg_select()
+
+# TODO:raw此时为dict，包含标签和原始数据
+# TODO:需要重写init
+
+# text_list = src.init.lsi_init(raw)
 
 # 生成文档向量
 dic_corpus = src.lsi.digitalize(text_list)
@@ -26,7 +31,7 @@ lsi = src.lsi.build_lsi(corpus_tfidf, dictionary)
 # 获取每个major的bucket_id及匹配度
 bucket = src.lsi.topic_cluster(lsi, corpus_tfidf)
 
-src.pg_insert.pg_insert(bucket)
+src.pg.pg_insert(bucket)
 
 # 获取索引
 index = src.lsi.lsi_index(lsi, corpus)
