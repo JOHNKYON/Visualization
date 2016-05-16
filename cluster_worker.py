@@ -5,11 +5,12 @@ import codecs
 import conf
 
 # 读入文件
-# input_file = codecs.open("data/source_without_header.txt", 'rb', encoding='utf8')
-# raw = input_file.read()
+input_file = codecs.open("data/source_without_header.txt", 'rb', encoding='utf8')
+raw = input_file.read()
 
 # 分词
 conf.jieba_conf.init()
+pg_conf = conf.pg_config
 # raw = src.pg.pg_select()
 
 text_list = src.init.lsi_init(raw)
@@ -28,7 +29,7 @@ lsi = src.lsi.build_lsi(corpus_tfidf, dictionary)
 # 获取每个major的bucket_id及匹配度
 bucket = src.lsi.topic_cluster(lsi, corpus_tfidf)
 
-src.pg.pg_insert(bucket)
+src.pg.pg_insert(bucket, pg_conf)
 
 # 获取索引
 index = src.lsi.lsi_index(lsi, corpus)

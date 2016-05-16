@@ -8,7 +8,7 @@ from psycopg2.extras import DictCursor
 __author__ = "JOHNKYON"
 
 
-def pg_insert(bucket):
+def pg_insert(bucket, pg_conf):
     """
     灌入major_bucket至postgresql
     :param bucket:
@@ -19,7 +19,8 @@ def pg_insert(bucket):
     dic = json.loads(major_list)
     bucket = map(lambda x: (dic[str(x[0])], x[1], x[2]), bucket)
 
-    connect = psycopg2.connect(database="dodo", user="data", password="wjf721", host="101.201.183.135", port=3433)
+    connect = psycopg2.connect(database=pg_conf['database'], user=pg_conf['user'], password=pg_conf['password'],
+                               host=pg_conf['host'], port=pg_conf['port'])
 
     cursor = connect.cursor()
 
@@ -33,12 +34,13 @@ def pg_insert(bucket):
     input_file.close()
 
 
-def pg_select():
+def pg_select(pg_conf):
     """
     查询category和对应的职位描述
     :return dict:
     """
-    connect = psycopg2.connect(database="dodo", user="data", password="wjf721", host="101.201.183.135", port=3433)
+    connect = psycopg2.connect(database=pg_conf['database'], user=pg_conf['user'], password=pg_conf['password'],
+                               host=pg_conf['host'], port=pg_conf['port'])
 
     cursor = connect.cursor(cursor_factory=DictCursor)
 
