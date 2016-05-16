@@ -139,3 +139,4 @@ fabric.properties
 images/
 data/
 conf/pg_conf.py
+temp/

@@ -51,7 +51,7 @@ def pg_select(pg_conf):
 
     cursor.execute(sql)
 
-    raw= cursor.fetchall()
+    raw = cursor.fetchall()
 
     connect.commit()
     cursor.close()

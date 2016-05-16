@@ -10,7 +10,7 @@ def digitalize(raw):
     """
     此函数用于接受双层数组的中文文档，将其数字化为标准词向量
     :param raw: 此参数为一个双层数组，第一层每个元素为单个文档，第二层每个元素为文档中的词
-    :return:    输入一个词向量
+    :return:    输出入一个词向量
     """
     # 生成词袋
     dictionary = gensim.corpora.Dictionary(raw)
@@ -26,7 +26,7 @@ def build_lsi(corpus, dictionary):
     """
     # 建立模型
     # 这个num_topics是拍脑门决定的，具体效果留待调参
-    lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=20)
+    lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=50)
     return lsi
 
 

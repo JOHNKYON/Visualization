@@ -2,6 +2,8 @@
 import re
 import jieba
 from data import stopwords
+import lsi
+import codecs
 
 
 __author__ = "JOHNKYON"
@@ -49,4 +51,40 @@ def tSNE_init(raw):
     :param raw:
     :return:
     """
-    pass
+
+    output_file = codecs.open('temp/temp.txt', 'wb', 'utf8')
+
+    # 文本本身处理，去除空白符，去除停用词
+    raw_without_space = map(lambda x: [re.sub('\s*', '', x[0]+x[1]), x[2]], raw)
+
+    jieba.load_userdict("data/jieba_dict.txt")
+    raw_cut = map(lambda x: [jieba.cut(x[0], cut_all=False), x[1]], raw_without_space)
+
+    raw_without_sw = map(lambda x: [filter(lambda y: y not in stopwords, x[0]), x[1]], raw_cut)
+
+    raw_doc = [x[0] for x in raw_without_sw]
+
+    dic_corpus = lsi.digitalize(raw_doc)
+
+    output_file.close()
+
+    dictionary = dic_corpus[0]
+    corpus = dic_corpus[1]
+
+    # 用tfidf训练
+    corpus_tfidf = lsi.build_tfidf(corpus)
+
+    # 训练lsi模型
+    lsi_model = lsi.build_lsi(corpus_tfidf, dictionary)
+
+    corpus_lsi = lsi_model[corpus_tfidf]
+
+    mtr = [[y[1] for y in x] for x in corpus_lsi]
+
+    print mtr
+
+
+
+
+
+
