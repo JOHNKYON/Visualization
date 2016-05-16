@@ -9,13 +9,10 @@ import conf
 # raw = input_file.read()
 
 # 分词
-# conf.jieba_conf.init()
-raw = src.pg.pg_select()
+conf.jieba_conf.init()
+# raw = src.pg.pg_select()
 
-# TODO:raw此时为dict，包含标签和原始数据
-# TODO:需要重写init
-
-# text_list = src.init.lsi_init(raw)
+text_list = src.init.lsi_init(raw)
 
 # 生成文档向量
 dic_corpus = src.lsi.digitalize(text_list)

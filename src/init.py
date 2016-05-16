@@ -42,4 +42,11 @@ def lsi_init(raw):
     return raw_without_sw
 
 
-def tSNE(raw):
+def tSNE_init(raw):
+    """
+    针对t-SNE算法进行数据初始化，使数据格式符合scikit-learn的t-SNE模块输入
+    暂定使用主题向量对计算初始值
+    :param raw:
+    :return:
+    """
+    pass
