@@ -53,6 +53,8 @@ def tSNE_init(raw):
     :return:
     """
 
+    # TODO:按照第二级目录进行标注颜色用于区分
+
     output_file = codecs.open('temp/temp.txt', 'wb', 'utf8')
 
     # 文本本身处理，去除空白符，去除停用词
@@ -67,8 +69,6 @@ def tSNE_init(raw):
 
     dic_corpus = lsi.digitalize(raw_doc)
 
-    output_file.close()
-
     dictionary = dic_corpus[0]
     corpus = dic_corpus[1]
 
@@ -82,10 +82,31 @@ def tSNE_init(raw):
 
     mtr = [[y[1] for y in x] for x in corpus_lsi]
 
+    for ele in mtr:
+        for x in ele:
+            output_file.write(str(x))
+            output_file.write('\t')
+        output_file.write('\n')
+
+    output_file.close()
+
     mtr = np.array(mtr)
 
-    return mtr
+    print type(raw[0][2])
 
+    # label = np.transpose(np.array(['#'+str(np.long(np.sqrt(long(str(x[2]/1000)[1:]))*16384)) for x in raw]))
+    label = np.transpose(np.array(['#' + str(hex(np.sqrt(long(str(x[2] / 100000)[1:])) * 2948576))[2:-1] for x in raw]))
+    print label
+
+    return mtr, label
+
+
+def tSNE_init_test(raw):
+    X = np.vstack([raw.data[raw.target == i]
+                   for i in range(10)])
+    y = np.hstack([raw.target[raw.target == i]
+                   for i in range(10)])
+    return X, y
 
 
 

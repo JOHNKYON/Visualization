@@ -42,11 +42,11 @@ def pg_select(pg_conf):
     connect = psycopg2.connect(database=pg_conf['database'], user=pg_conf['user'], password=pg_conf['password'],
                                host=pg_conf['host'], port=pg_conf['port'])
 
-    cursor = connect.cursor(cursor_factory=DictCursor)
+    cursor = connect.cursor()
 
     sql = """   SELECT name, description, category
                 FROM company_position_new
-                WHERE company_id IS NOT NULL AND category > 100
+                WHERE company_id IS NOT NULL AND category > 100 AND (category < 10400000 OR category > 10500000)
                 ORDER BY category"""
 
     cursor.execute(sql)

@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-  
 import src
 import conf
+from sklearn.datasets import load_digits
 
 __author__ = "JOHNKYON"
 
@@ -11,11 +12,13 @@ print 'split finished'
 
 pg_conf = conf.pg_config
 
-raw = src.pg.pg_select(pg_conf)
+# raw = src.pg.pg_select(pg_conf)
+raw = load_digits()
+raw.data.shape
 
 print 'pg finished'
 
-mtr = src.init.tSNE_init(raw)
+mtr, label = src.init.tSNE_init_test(raw)
 
 print 'init finished'
 
@@ -23,5 +26,5 @@ result = src.t_SNE.plot_build(mtr)
 
 print 'build finished'
 
-src.image_build.imamge_2D(result)
+src.image_build.imamge_2D(result, label)
 

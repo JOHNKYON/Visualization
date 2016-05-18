@@ -23,4 +23,6 @@ def plot_build(mtr):
             output_file.write('\t')
         output_file.write('\n')
 
+    output_file.close()
+
     return points
