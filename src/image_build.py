@@ -1,12 +1,16 @@
-# -*- coding:utf-8 -*-  
+# -*- coding:utf-8 -*-
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 __author__ = "JOHNKYON"
 
 
-def imamge_2D(point):
+def imamge_2D(points):
     """
     用于生成二维图像
-    :param point:
+    :param points:
     :return:
     """
-    pass
+    plt.plot(points[:, 0], points[:, 1], 'o')
+    plt.savefig('images/nlp-generated.png')

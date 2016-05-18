@@ -4,6 +4,7 @@ import jieba
 from data import stopwords
 import lsi
 import codecs
+import numpy as np
 
 
 __author__ = "JOHNKYON"
@@ -81,7 +82,9 @@ def tSNE_init(raw):
 
     mtr = [[y[1] for y in x] for x in corpus_lsi]
 
-    print mtr
+    mtr = np.array(mtr)
+
+    return mtr
 
 
 
