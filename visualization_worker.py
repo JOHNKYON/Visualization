@@ -12,13 +12,14 @@ print 'split finished'
 
 pg_conf = conf.pg_config
 
-# raw = src.pg.pg_select(pg_conf)
-raw = load_digits()
-raw.data.shape
+raw = src.pg.pg_select(pg_conf)
+# raw = load_digits()
+# raw.data.shape
 
 print 'pg finished'
 
-mtr, label = src.init.tSNE_init_test(raw)
+mtr, label = src.init.tSNE_init(raw)
+# mtr, label = src.init.tSNE_init_test(raw)
 
 print 'init finished'
 

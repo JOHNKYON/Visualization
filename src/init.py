@@ -94,8 +94,8 @@ def tSNE_init(raw):
 
     print type(raw[0][2])
 
-    # label = np.transpose(np.array(['#'+str(np.long(np.sqrt(long(str(x[2]/1000)[1:]))*16384)) for x in raw]))
-    label = np.transpose(np.array(['#' + str(hex(np.sqrt(long(str(x[2] / 100000)[1:])) * 2948576))[2:-1] for x in raw]))
+    label = np.transpose(np.array(['#' + str(hex(np.square(long(str(x[2] / 1000)[1:])) * 5))[2:-1] for x in raw]))
+    # label = np.transpose(np.array(['#' + str(hex(np.sqrt(long(str(x[2] / 100000)[1:])) * 2948576))[2:-1] for x in raw]))
     print label
 
     return mtr, label

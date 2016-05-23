@@ -14,4 +14,4 @@ def imamge_2D(points, label):
     """
 
     plt.scatter(points[:, 0], points[:, 1], c=label)
-    plt.savefig('images/nlp-generated-test.png')
+    plt.savefig('images/image_second/115_政府.png')
