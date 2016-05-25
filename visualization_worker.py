@@ -18,7 +18,8 @@ raw = src.pg.pg_select(pg_conf)
 
 print 'pg finished'
 
-mtr, label = src.init.tSNE_init(raw)
+
+mtr, label = src.init.tSNE_init(raw, 23)
 # mtr, label = src.init.tSNE_init_test(raw)
 
 print 'init finished'
@@ -27,5 +28,6 @@ result = src.t_SNE.plot_build(mtr)
 
 print 'build finished'
 
-src.image_build.imamge_2D(result, label)
+src.image_build.imamge_2D(result, label, 23)
+
 

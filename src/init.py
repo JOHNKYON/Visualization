@@ -45,7 +45,7 @@ def lsi_init(raw):
     return raw_without_sw
 
 
-def tSNE_init(raw):
+def tSNE_init(raw, topics):
     """
     针对t-SNE算法进行数据初始化，使数据格式符合scikit-learn的t-SNE模块输入
     暂定使用主题向量对计算初始值
@@ -55,7 +55,7 @@ def tSNE_init(raw):
 
     # TODO:按照第二级目录进行标注颜色用于区分
 
-    output_file = codecs.open('temp/temp.txt', 'wb', 'utf8')
+    # output_file = codecs.open('temp/temp.txt', 'wb', 'utf8')
 
     # 文本本身处理，去除空白符，去除停用词
     raw_without_space = map(lambda x: [re.sub('\s*', '', x[0]+x[1]), x[2]], raw)
@@ -76,25 +76,25 @@ def tSNE_init(raw):
     corpus_tfidf = lsi.build_tfidf(corpus)
 
     # 训练lsi模型
-    lsi_model = lsi.build_lsi(corpus_tfidf, dictionary)
+    lsi_model = lsi.build_lsi(corpus_tfidf, dictionary, topics)
 
     corpus_lsi = lsi_model[corpus_tfidf]
 
     mtr = [[y[1] for y in x] for x in corpus_lsi]
 
-    for ele in mtr:
-        for x in ele:
-            output_file.write(str(x))
-            output_file.write('\t')
-        output_file.write('\n')
-
-    output_file.close()
+    # for ele in mtr:
+    #     for x in ele:
+    #         output_file.write(str(x))
+    #         output_file.write('\t')
+    #     output_file.write('\n')
+    #
+    # output_file.close()
 
     mtr = np.array(mtr)
 
     print type(raw[0][2])
 
-    label = np.transpose(np.array(['#' + str(hex(np.square(long(str(x[2] / 1000)[1:])) * 5))[2:-1] for x in raw]))
+    label = np.transpose(np.array(['#' + str(hex(np.square(long(str(x[2] / 1000)[1:])) * 90))[2:-1] for x in raw]))
     # label = np.transpose(np.array(['#' + str(hex(np.sqrt(long(str(x[2] / 100000)[1:])) * 2948576))[2:-1] for x in raw]))
     print label
 

@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import jieba
-from data import stopwords
-import re
 import gensim
 
 
@@ -19,14 +16,15 @@ def digitalize(raw):
     return [dictionary, corpus]
 
 
-def build_lsi(corpus, dictionary):
+def build_lsi(corpus, dictionary, topics=20):
     """
+    :param topics: topic的数量
     :param corpus, dictionary: corpus为一个文档向量,构成为[(0,n),(1,m),```], dictionary为文档的词袋
     :return:    构造完成的lsi模型
     """
     # 建立模型
     # 这个num_topics是拍脑门决定的，具体效果留待调参
-    lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=50)
+    lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=topics)
     return lsi
 
 
