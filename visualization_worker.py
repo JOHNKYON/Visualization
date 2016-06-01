@@ -8,7 +8,6 @@ __author__ = "JOHNKYON"
 # 分词
 conf.jieba_conf.init()
 
-print 'split finished'
 
 pg_conf = conf.pg_config
 
@@ -17,6 +16,8 @@ raw = src.pg.pg_select(pg_conf)
 # raw.data.shape
 
 print 'pg finished'
+
+print 'split finished'
 
 
 mtr, label = src.init.tSNE_init(raw, 23)

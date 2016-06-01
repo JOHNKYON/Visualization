@@ -5,6 +5,7 @@ from data import stopwords
 import lsi
 import codecs
 import numpy as np
+from sklearn.feature_extraction.text import TfidfTransformer
 
 
 __author__ = "JOHNKYON"
@@ -109,6 +110,42 @@ def tSNE_init_test(raw):
     return X, y
 
 
+def class_init_tf_idf(raw):
+    raw_without_space = map(lambda x: [re.sub('\s*', '', x[0])], raw)
 
+    raw_without_space = [x[0] for x in raw_without_space]
 
+    # temp = codecs.open("temp/corpus.txt", 'wb', encoding='utf8')
+
+    jieba.load_userdict("data/jieba_dict.txt")
+    raw_cut = [jieba.cut(x, cut_all=False) for x in raw_without_space]
+
+    # for ele in raw_cut:
+    #     print ele[0][0]
+
+    # for ele in raw_cut:
+    #     for a in ele:
+    #         temp.write(a+'\t')
+    #     temp.write('\n')
+    #
+    # temp.close()
+
+    raw_without_sw = map(lambda x: [filter(lambda y: y not in stopwords, x)], raw_cut)
+
+    # for ele in raw_doc:
+    #     print ele[0][0]
+
+    raw_doc = [x[0] for x in raw_without_sw]
+    dic_corpus = lsi.digitalize(raw_doc)
+    dictionary = dic_corpus[0]
+    corpus = dic_corpus[1]
+    print corpus
+
+    transformer = TfidfTransformer()
+
+     # 用tfidf训练
+    corpus_tfidf = lsi.build_tfidf(corpus)
+    # for ele in corpus_tfidf:
+    #     print ele
+    return corpus_tfidf
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import gensim
+import codecs
 
 
 def digitalize(raw):
@@ -9,10 +10,17 @@ def digitalize(raw):
     :param raw: 此参数为一个双层数组，第一层每个元素为单个文档，第二层每个元素为文档中的词
     :return:    输出入一个词向量
     """
+    # temp = codecs.open("temp/corpus.txt", 'wb', encoding='utf8')
+    # for ele in raw:
+    #     for a in ele:
+    #         temp.write(a+'\t')
+    #     temp.write('\n')
     # 生成词袋
     dictionary = gensim.corpora.Dictionary(raw)
+    # print dictionary.token2id
     # 生成文档向量
     corpus = [dictionary.doc2bow(text) for text in raw]
+    # print corpus
     return [dictionary, corpus]
 
 
