@@ -139,13 +139,27 @@ def class_init_tf_idf(raw):
     dic_corpus = lsi.digitalize(raw_doc)
     dictionary = dic_corpus[0]
     corpus = dic_corpus[1]
-    print corpus
 
-    transformer = TfidfTransformer()
+    dimension = max(dictionary.token2id.values())
+    print len(corpus)
+
+    # transformer = TfidfTransformer()
 
      # 用tfidf训练
     corpus_tfidf = lsi.build_tfidf(corpus)
     # for ele in corpus_tfidf:
     #     print ele
-    return corpus_tfidf
+
+    print max(dictionary.token2id.values())
+
+    #建立并初始化tfidf矩阵
+    arr = np.zeros([len(corpus), max(dictionary.token2id.values())], dtype='float64')
+
+    counter = 0
+    for line in corpus_tfidf:
+        for ele in line:
+            arr[counter][ele[0]-1] = ele[1]
+        counter += 1
+
+    return arr
 
