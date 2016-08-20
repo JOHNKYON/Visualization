@@ -15,20 +15,20 @@ raw = src.pg.pg_select(pg_conf)
 # raw = load_digits()
 # raw.data.shape
 
-print 'pg finished'
+print('pg finished')
 
-print 'split finished'
+print('split finished')
 
 
-mtr, label = src.init.tSNE_init(raw, 23)
+mtr, label = src.init.tSNE_init(raw, 1)
 # mtr, label = src.init.tSNE_init_test(raw)
 
-print 'init finished'
+print('init finished')
 
 result = src.t_SNE.plot_build(mtr)
 
-print 'build finished'
+print('build finished')
 
-src.image_build.imamge_2D(result, label, 23)
+src.image_build.imamge_2D(result, label, 1)
 
 
